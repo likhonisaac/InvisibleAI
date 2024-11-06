@@ -5,26 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InvisibleAI - Twitter Authentication</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
-        #app { text-align: center; }
-        .twitter-button { padding: 10px 20px; background-color: #1DA1F2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        :root {
+            --primary-color: #1DA1F2;
+            --secondary-color: #282c34;
+            --background-color: #f4f4f9;
+            --error-color: #FF4C4C;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--background-color);
+        }
+        #app {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: var(--secondary-color);
+            font-size: 24px;
+        }
+        p {
+            color: #333;
+            margin: 10px 0 20px;
+            font-size: 16px;
+        }
+        .twitter-button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .twitter-button:hover {
+            background-color: #1A91DA;
+        }
+        #error-message {
+            color: var(--error-color);
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div id="app">
-        <h1>Welcome to InvisibleAI</h1>
-        <p>Authenticate with Twitter to access exclusive services.</p>
+        <h1>InvisibleAI</h1>
+        <p>Authenticate with Twitter for seamless productivity.</p>
         <button class="twitter-button" onclick="startTwitterAuth()">Login with Twitter</button>
+        <p id="error-message">Something went wrong. Please try again.</p>
     </div>
 
     <script>
         async function startTwitterAuth() {
             try {
-                // Redirects to the Twitter authentication URL from the server
+                // Redirects to Twitter OAuth endpoint on the server
                 const response = await fetch('/api/auth/twitter');
                 const { url } = await response.json();
-                window.location.href = url; // Redirect to Twitter for authentication
+                window.location.href = url;
             } catch (error) {
+                document.getElementById('error-message').style.display = 'block';
                 console.error("Error initiating Twitter OAuth:", error);
             }
         }
