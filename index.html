@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvisibleAI - Twitter Authentication</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
+        #app { text-align: center; }
+        .twitter-button { padding: 10px 20px; background-color: #1DA1F2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Welcome to InvisibleAI</h1>
+        <p>Authenticate with Twitter to access exclusive services.</p>
+        <button class="twitter-button" onclick="startTwitterAuth()">Login with Twitter</button>
+    </div>
 
+    <script>
+        async function startTwitterAuth() {
+            try {
+                // Redirects to the Twitter authentication URL from the server
+                const response = await fetch('/api/auth/twitter');
+                const { url } = await response.json();
+                window.location.href = url; // Redirect to Twitter for authentication
+            } catch (error) {
+                console.error("Error initiating Twitter OAuth:", error);
+            }
+        }
+    </script>
+</body>
+</html>
