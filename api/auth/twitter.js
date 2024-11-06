@@ -1,17 +1,23 @@
-// /api/auth/twitter.js
-import { URLSearchParams } from 'url';
+// api/auth/twitter.js
+import { OAuth } from 'oauth';
 
 export default async function handler(req, res) {
-    const twitterAuthUrl = 'https://twitter.com/i/oauth2/authorize';
-    const params = new URLSearchParams({
-        response_type: 'code',
-        client_id: process.env.TWITTER_CLIENT_ID,
-        redirect_uri: `${process.env.BASE_URL}/api/auth/callback`,
-        scope: 'tweet.read tweet.write users.read offline.access',
-        state: 'secureRandomState',  // Ensure a secure random string
-        code_challenge: 'challenge',  // PKCE challenge (use hashed in production)
-        code_challenge_method: 'plain'  // Use 'S256' for hashed challenge in production
-    });
+    const oauth = new OAuth(
+        'https://api.twitter.com/oauth/request_token',
+        'https://api.twitter.com/oauth/access_token',
+        process.env.TWITTER_CONSUMER_KEY,
+        process.env.TWITTER_CONSUMER_SECRET,
+        '1.0A',
+        `${process.env.BASE_URL}/api/auth/callback`,
+        'HMAC-SHA1'
+    );
 
-    res.json({ url: `${twitterAuthUrl}?${params.toString()}` });
+    oauth.getOAuthRequestToken((error, oauth_token, oauth_token_secret) => {
+        if (error) {
+            res.status(500).json({ error: 'Failed to initiate authentication' });
+        } else {
+            res.json({ url: `https://api.twitter.com/oauth/authorize?oauth_token=${oauth_token}` });
+            // Store oauth_token_secret in memory or database temporarily if needed for callback
+        }
+    });
 }
